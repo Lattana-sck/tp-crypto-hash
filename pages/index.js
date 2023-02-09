@@ -1,7 +1,40 @@
-import Head from 'next/head'
-import { Inter } from '@next/font/google'
+import Head from "next/head";
+import { SHA256, MD5, RIPEMD160, AES } from "crypto-js";
+import { keccak512 } from "js-sha3";
+import NodeRSA from "node-rsa";
 
-const inter = Inter({ subsets: ['latin'] })
+let optionSelect;
+const onChangeOption = (e) => {
+  return optionSelect = e.target.value;
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  let value = "";
+  switch (optionSelect) {
+    case "MD5":
+      value = MD5(e.target[0].value).toString();
+      break;
+    case "SHA256":
+      value = SHA256(e.target[0].value).toString();
+      break;
+    case "Keccak-512":
+      value = keccak512(e.target[0].value).toString();
+      break;
+    case "RipeMD160":
+      value = RIPEMD160(e.target[0].value).toString();
+      break;
+    case "AES":
+      value = AES(e.target[0].value).toString();
+      break;
+    case "RSA":
+      value = NodeRSA(e.target[0].value).toString();
+      break;
+    default:
+      break;
+  }
+  alert(value);
+};
 
 export default function Home() {
   return (
@@ -12,7 +45,91 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+      <div className="flex justify-center mb-12">
+        <h1>TP : Crypto & fonction de hashage</h1>
+      </div>
+      <div className="flex justify-center">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg">
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-first-name"
+              >
+                Texte à hasher
+              </label>
+              <input
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="grid-first-name"
+                type="text"
+                placeholder="Texte à hasher"
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap -mx-3 mb-2">
+            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-state"
+              >
+                Algorithme de hashage
+              </label>
+              <div className="relative">
+                <select
+                  onChange={onChangeOption}
+                  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  id="grid-state"
+                >
+                  <option value="MD5">MD5</option>
+                  <option value="SHA256">SHA256</option>
+                  <option value="Keccak-512">Keccak-512</option>
+                  <option value="RipeMD160">RipeMD160</option>
+                  <option value="AES">AES</option>
+                  <option value="RSA">RSA</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Valider
+          </button>
+        </form>
+
+        <div className="max-w-xl">
+          <label className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+            <span className="flex items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              <span className="font-medium text-gray-600">
+                Drop files to Attach, or&nbsp;
+                <span className="text-blue-600 underline">browse</span>
+              </span>
+            </span>
+            <input type="file" name="file_upload" className="hidden" />
+          </label>
+        </div>
+      </div>
     </>
-  )
+  );
 }
