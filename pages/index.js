@@ -2,10 +2,11 @@ import Head from "next/head";
 import { SHA256, MD5, RIPEMD160, AES } from "crypto-js";
 import { keccak512 } from "js-sha3";
 import NodeRSA from "node-rsa";
+var CryptoJS = require("crypto-js");
 
 let optionSelect;
 const onChangeOption = (e) => {
-  return optionSelect = e.target.value;
+  return (optionSelect = e.target.value);
 };
 
 const handleSubmit = (e) => {
@@ -25,7 +26,10 @@ const handleSubmit = (e) => {
       value = RIPEMD160(e.target[0].value).toString();
       break;
     case "AES":
-      value = AES(e.target[0].value).toString();
+      value = CryptoJS.AES.encrypt(
+        e.target[0].value,
+        "secret key 123"
+      ).toString();
       break;
     case "RSA":
       value = NodeRSA(e.target[0].value).toString();
@@ -80,6 +84,7 @@ export default function Home() {
                   className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-state"
                 >
+                  <option value="">Choisir algo</option>
                   <option value="MD5">MD5</option>
                   <option value="SHA256">SHA256</option>
                   <option value="Keccak-512">Keccak-512</option>
@@ -99,9 +104,14 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Valider
-          </button>
+          <div className="flex flex-col w-1/3">
+            <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Hash / Chiffrer
+            </button>
+            <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Déchiffrer
+            </button>
+          </div>
         </form>
 
         <div className="max-w-xl">
