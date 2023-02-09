@@ -1,8 +1,17 @@
 import Head from "next/head";
 import { SHA256, MD5, RIPEMD160, AES } from "crypto-js";
 import { keccak512 } from "js-sha3";
-import NodeRSA from "node-rsa";
 var CryptoJS = require("crypto-js");
+const NodeRSA = require('node-rsa');
+
+const key = new NodeRSA({b: 512});
+const publicKey = key.exportKey('pkcs8-public');
+const privateKey = key.exportKey('pkcs8-private');
+
+// const textToEncrypt = "text to encrypt";
+
+// const encrypted = key.encrypt(textToEncrypt, 'base64');
+// console.log(encrypted);
 
 let optionSelect;
 const onChangeOption = (e) => {
@@ -25,14 +34,14 @@ const handleSubmit = (e) => {
     case "RipeMD160":
       value = RIPEMD160(e.target[0].value).toString();
       break;
-    case "AES":
+    case "AES-Enc":
       value = CryptoJS.AES.encrypt(
         e.target[0].value,
         "secret key 123"
       ).toString();
       break;
-    case "RSA":
-      value = NodeRSA(e.target[0].value).toString();
+    case "RSA-Enc":
+      value = key.encrypt(e.target[0].value, 'base64');;
       break;
     default:
       break;
@@ -60,7 +69,7 @@ export default function Home() {
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                 htmlFor="grid-first-name"
               >
-                Texte à hasher
+                Texte à hasher, chiffrer, déchiffrer
               </label>
               <input
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -89,8 +98,8 @@ export default function Home() {
                   <option value="SHA256">SHA256</option>
                   <option value="Keccak-512">Keccak-512</option>
                   <option value="RipeMD160">RipeMD160</option>
-                  <option value="AES">AES</option>
-                  <option value="RSA">RSA</option>
+                  <option value="AES-Enc">AES - chiffrer</option>
+                  <option value="RSA-Enc">RSA - chiffrer</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg
@@ -106,10 +115,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col w-1/3">
             <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Hash / Chiffrer
-            </button>
-            <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Déchiffrer
+              Confirmer
             </button>
           </div>
         </form>
